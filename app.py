@@ -31,7 +31,7 @@ def display_data():
   mydoc = mycol.find_one({})
   data_display = mydoc['Time Series']
   df = pd.DataFrame(data_display).T.iloc[:, ::-1]
-  data = df.iloc[0:3,0:period].iloc[:, ::-1].T.to_json(date_format ='iso')
+  data = df.iloc[0:4,0:period].iloc[:, ::-1].T.to_json(date_format ='iso')
   return data
 
 @app.route("/quote")
