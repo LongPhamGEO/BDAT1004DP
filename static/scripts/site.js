@@ -57,63 +57,49 @@ Site.prototype.RenderChart = function(data, quote){
 	var dates = [];
 
 	var title = quote.shortName  + " (" + quote.symbol + ") - " + numeral(quote.price).format('$0,0.00');
+	var title = quote.shortName  + " (" + quote.symbol + ") - " + numeral(quote.price).format('$0,0.00');
+	var stockname = quote.shortName;
 
 	for(var i in data.Close){
 		var dt = i.slice(0,i.length-3);
-		var dateString = moment.unix(dt).format("MM/YY");
+		var dateString = moment.unix(dt).format("DD/MM/YY");
+		var dateprice = [];
 		var close = data.Close[i];
 		if(close != null){
-			priceData.push(data.Close[i]);
-			dates.push(dateString);
+			dateprice.push(dateString);
+			dateprice.push(data.Open[i]);
+			dateprice.push(data.High[i]);
+			dateprice.push(data.Low[i]);
+			dateprice.push(data.Close[i]);
+			priceData.push(dateprice);
 		}
 	}
 
 	Highcharts.chart('chart_container', {
+		rangeSelector: {
+			selected: 1
+		},
+
 		title: {
 			text: title
 		},
-		yAxis: {
-			title: {
-				text: ''
-			}
-		},
-		xAxis: {
-			categories :dates,
-		},
-		legend: {
-			layout: 'vertical',
-			align: 'right',
-			verticalAlign: 'middle'
-		},
-		plotOptions: {
-			series: {
-				label: {
-					connectorAllowed: false
-				}
-			},
-			area: {
-			}
-		},
+
 		series: [{
-			type: 'area',
-			color: '#85bb65',
-			name: 'Price',
-			data: priceData
-		}],
-		responsive: {
-			rules: [{
-				condition: {
-					maxWidth: 640
-				},
-				chartOptions: {
-					legend: {
-						layout: 'horizontal',
-						align: 'center',
-						verticalAlign: 'bottom'
-					}
-				}
-			}]
-		}
+			type: 'candlestick',
+			name: stockname,
+			data: priceData,
+			dataGrouping: {
+			units: [
+			    [
+				'week', // unit name
+				[1] // allowed multiples
+			    ], [
+				'month',
+				[1, 2, 3, 4, 6]
+			    ]
+			]
+		    }
+		}]
 
 	});
 
